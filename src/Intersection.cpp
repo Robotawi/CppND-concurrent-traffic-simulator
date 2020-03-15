@@ -83,10 +83,15 @@ void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 
     // wait until the vehicle is allowed to enter
     ftrVehicleAllowedToEnter.wait();
+    // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
+//    std::cout << "I reached 1  :) " << std::endl;
+    if (_traflight.getCurrentPhase() != TrafficLightPhase::green){
+//        std::cout << "I reached 2  :) " << std::endl;
+        _traflight.waitForGreen();
+//        std::cout << "I reached 3  :) " << std::endl;
+    }
     lck.lock();
     std::cout << "Intersection #" << _id << ": Vehicle #" << vehicle->getID() << " is granted entry." << std::endl;
-    
-    // FP.6b : use the methods TrafficLight::getCurrentPhase and TrafficLight::waitForGreen to block the execution until the traffic light turns green.
 
     lck.unlock();
 }
@@ -109,6 +114,7 @@ void Intersection::setIsBlocked(bool isBlocked)
 void Intersection::simulate() // using threads + promises/futures + exceptions
 {
     // FP.6a : In Intersection.h, add a private member _trafficLight of type TrafficLight. At this position, start the simulation of _trafficLight.
+    _traflight.simulate();
 
     // launch vehicle queue processing in a thread
     threads.emplace_back(std::thread(&Intersection::processVehicleQueue, this));

@@ -1,6 +1,6 @@
 # CPPND: Program a Concurrent Traffic Simulation
 
-In this project, the given is a traffic simulator in which vehicles are crossing intersections one by one. A single vehicle can enter the entersection at one time. To solve this limitation, a traffic light system is to be adapted at the intersection. The aim is to develop the traffic light class and establish a thread safe communication between the vehicles, the intersections, and the traffic lights. This project is designed to apply the concepts of concurrency in C++ (such as mutexes, locks and message queues) through Udacity's C++ Nanodegree where I am mentoring students now to master these concepts. 
+In this project, the given is a traffic simulator in which vehicles are crossing intersections one by one. A traffic light system is to be adopted at the intersection. The aim is to develop the traffic light class and establish a thread safe communication between the vehicles, the intersections, and the traffic lights. This project is designed to apply the concepts of concurrency in C++ (such as mutexes, locks and message queues) through Udacity's C++ Nanodegree.
 
 # The given traffic simulator
 <img src="data/traffic_simulation.gif"/>

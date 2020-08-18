@@ -29,7 +29,6 @@ void WaitingVehicles::permitEntryToFirstInQueue()
 {
     std::lock_guard<std::mutex> lock(_mutex);
 
-    // get entries from the front of both queues
     auto firstPromise = _promises.begin();
     auto firstVehicle = _vehicles.begin();
 
@@ -38,8 +37,6 @@ void WaitingVehicles::permitEntryToFirstInQueue()
     _vehicles.erase(firstVehicle);
     _promises.erase(firstPromise);
 }
-
-/* Implementation of class "Intersection" */
 
 Intersection::Intersection()
 {
@@ -54,7 +51,6 @@ void Intersection::addStreet(std::shared_ptr<Street> street)
 
 std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<Street> incoming)
 {
-    // store all outgoing streets in a vector ...
     std::vector<std::shared_ptr<Street>> outgoings;
     for (auto it : _streets)
     {
@@ -67,7 +63,6 @@ std::vector<std::shared_ptr<Street>> Intersection::queryStreets(std::shared_ptr<
     return outgoings;
 }
 
-// adds a new vehicle to the queue and returns once the vehicle is allowed to enter
 void Intersection::addVehicleToQueue(std::shared_ptr<Vehicle> vehicle)
 {
     std::unique_lock<std::mutex> lck(_mtx);

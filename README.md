@@ -41,24 +41,30 @@ With the increasing traffic in the city, traffic lights are needed for road safe
 ./traffic_simulation
 ```
 
-## The Implemented Changes to adapt traffic lights and concurrency
+## The Implemented Changes for Concurrent Traffic Simulation
 
-### 1 :
+### 1 : Define the TrafficLight Class and Methods
+
 I defined a class `TrafficLight` as a child class of `TrafficObject`. The class has public methods `void waitForGreen()` and `void simulate()` as well as `TrafficLightPhase getCurrentPhase()`, where `TrafficLightPhase` is an enum that can be either `red` or `green`. Also, I added the private method `void cycleThroughPhases()`, and the private member `_currentPhase` which can take `red` or `green` as its value to let the check for the traffic happen later.
 
-### 2 :
+### 2 : Implement Traffic Light Phase Cycling
+
 I implemented the function `void cycleThroughPhases()` with an infinite loop that measures the time between two loop cycles and toggles the current phase of the traffic light between red and green and sends an update method to the message queue using move semantics. The cycle duration is a random value between 4 and 6 seconds. In the while-loop, `std::this_thread::sleep_` to wait 1ms between two cycles. Finally, the method `cycleThroughPhases` is started in a thread when the public method `simulate` is called.
 
-### 3 :
+### 3 : Define the MessageQueue Class
+
 A class `MessageQueue` is defined with public methods send and receive. Send should take an rvalue reference of type TrafficLightPhase whereas receive should return this type. The class defines an `std::dequeue` called `_queue`, which stores objects of type `TrafficLightPhase`. There is a `std::condition_variable` as well as an `std::mutex` defined as private members.
 
-### 4 :
+### 4 : Implement the Send Method
+
 The implementation of the method `Send`, uses the mechanisms `std::lock_guard<std::mutex>` as well as `_condition.notify_one()` to add a new message to the queue and afterwards send a notification. In class `TrafficLight`, create a private member of type `MessageQueue` for messages of type `TrafficLightPhase` and use it within the infinite loop to push each new `TrafficLightPhase` into it by calling send in conjunction with move semantics.
 
-### 5 :
+### 5 : Implement the Receive Method and waitForGreen
+
 The method `Receive` uses `std::unique_lock<std::mutex>` and `_condition.wait()` to wait for and receive new messages and pull them from the queue using move semantics. The received object is returned by the receive function. The implementation of the method `waitForGreen` is added and within it, an infinite while-loop runs and repeatedly calls the `receive` function on the message queue. Once it receives `TrafficLightPhase::green`, the method returns.
 
-### 6 :
+### 6 : Integrate Traffic Light in Intersection Class
+
 In class Intersection, a private member `_trafficLight` of type `TrafficLight` is added. In method `Intersection::simulate()`, start the simulation of `_trafficLight`. Then, in the method `Intersection::addVehicleToQueue`, the methods `TrafficLight::getCurrentPhase` and `TrafficLight::waitForGreen` are used to block the execution until the traffic light turns green.
 
 ## Contact
